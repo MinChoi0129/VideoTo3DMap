@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "video2map"
+version = "0.1.0"
+description = "Video in, 3D map out: VGGT-Omega windows tied by Sim(3) with VGGT-SLAM 2.0 loop closures"
+requires-python = ">=3.10"
+dependencies = [
+    "torch>=2.6",
+    "torchvision",
+    "numpy<2",
+    "scipy",
+    "opencv-python",
+    "pyyaml",
+    "pytorch-lightning",
+    "pytorch-metric-learning",
+    "vggt-omega @ git+https://github.com/facebookresearch/vggt-omega.git",
+    "vggt @ git+https://github.com/MIT-SPARK/VGGT_SPARK.git",
+    "salad @ git+https://github.com/Dominic101/salad.git",
+]
+
+[tool.setuptools]
+packages = ["video2map"]
+
+[tool.setuptools.package-data]
+video2map = ["default.yaml"]

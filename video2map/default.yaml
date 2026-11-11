@@ -1,0 +1,23 @@
+# video2map defaults. A config given to VideoToMap (dict or yaml file) overrides these key by key.
+device: cuda
+
+keyframes:
+  min_disparity: 50          # px of image motion, summed frame to frame, between two keyframes
+  frame_stride: 1            # look at every n-th video frame
+
+reconstruction:
+  checkpoint: null           # VGGT-Omega weights, e.g. vggt_omega_1b_512.pt (huggingface.co/facebook/VGGT-Omega, access by request)
+  resolution: 512
+  window: 64                 # keyframes reconstructed together
+  overlap: 32                # keyframes shared by two neighbouring windows; the Sim(3) between them is fitted on every pixel of these
+  confidence_percentile: 25  # the least confident pixels of every keyframe are left out of fits and of the map
+
+loops:
+  enabled: true
+  salad_checkpoint: null     # null: <torch hub dir>/checkpoints/dino_salad.ckpt, as VGGT-SLAM 2.0
+  retrieval_threshold: 0.95  # SALAD L2 distance below which a pair is a candidate (VGGT-SLAM 2.0 lc_thres)
+  match_ratio: 0.95          # VGGT-1B image match ratio a candidate needs (VGGT-SLAM 2.0)
+
+output:
+  width: 518                 # map pixels per keyframe row (0: the VGGT-Omega input grid)
+  voxel: 0.0                 # voxel size of map.ply in map units (0: every confident keyframe pixel)
