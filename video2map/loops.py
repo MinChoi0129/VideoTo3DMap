@@ -8,11 +8,14 @@ from vggt.models.vggt import VGGT
 from vggt.utils.load_fn import load_and_preprocess_images
 
 VGGT_URL = "https://huggingface.co/facebook/VGGT-1B/resolve/main/model.pt"
+SALAD_URL = "https://github.com/serizba/salad/releases/download/v1.0.0/dino_salad.ckpt"
 
 
 class LoopDetector:
     def __init__(self, salad_checkpoint=None, device="cuda"):
         ckpt = salad_checkpoint or os.path.join(torch.hub.get_dir(), "checkpoints", "dino_salad.ckpt")   # where VGGT-SLAM 2.0 keeps it
+        if not os.path.exists(ckpt):
+            os.makedirs(os.path.dirname(ckpt), exist_ok=True); torch.hub.download_url_to_file(SALAD_URL, ckpt)
         self.device, self.salad = device, load_model(ckpt).to(device).eval()
         self.salad_in = T.Compose([T.Resize((224, 224), interpolation=T.InterpolationMode.BILINEAR), T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
         self.vggt = VGGT(); self.vggt.load_state_dict(torch.hub.load_state_dict_from_url(VGGT_URL)); self.vggt = self.vggt.eval().to(torch.bfloat16).to(device)
